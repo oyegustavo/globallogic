@@ -78,11 +78,11 @@ public class UserServiceImpl implements IUserService {
 		return dtos;
 	}
 
-	private UserDto convertToDto(User user) {
+	public UserDto convertToDto(User user) {
 		return modelMapper.map(user, UserDto.class);
 	}
 
-	private User converToEntity(UserDto userDto) {
+	public User converToEntity(UserDto userDto) {
 		return modelMapper.map(userDto, User.class);
 	}
 
