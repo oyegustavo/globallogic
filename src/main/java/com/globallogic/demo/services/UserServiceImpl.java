@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.globallogic.demo.dto.UserDto;
@@ -25,6 +26,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncode;
 
 	@Override
 	public UserDto signUp(UserDto userDto) throws Exception {
@@ -35,6 +39,7 @@ public class UserServiceImpl implements IUserService {
 		if (!GLUtils.isValidPassword(userDto.getPassword())) {
 			throw new Exception("Invalid password!");
 		}
+		userDto.setPassword(passwordEncode.encode(userDto.getPassword()));
 		try {
 			User user = converToEntity(userDto);
 			user.setCreated(new Date());
