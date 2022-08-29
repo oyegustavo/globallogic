@@ -7,4 +7,5 @@ import com.globallogic.demo.model.User;
 
 @Repository
 public interface IUserRepository extends CrudRepository<User, Integer>{
+	public User findByEmail(String email);
 }

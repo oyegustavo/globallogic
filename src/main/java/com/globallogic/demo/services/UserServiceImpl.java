@@ -33,6 +33,10 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserDto signUp(UserDto userDto) throws Exception {
 		UserDto result = null;
+		if (userRepository.findByEmail(userDto.getEmail())!=null) {
+			throw new Exception("The user " + userDto.getEmail() + " already exists!");
+		}
+		
 		if (!EmailValidator.getInstance().isValid(userDto.getEmail())) {
 			throw new Exception("Invalid email address!");
 		}
