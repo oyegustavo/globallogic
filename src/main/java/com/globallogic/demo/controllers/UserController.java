@@ -26,13 +26,13 @@ public class UserController {
 	private IUserService userService;
 
 	@GetMapping({ "login/{id}" })
-	public Object login(@PathVariable Long id) throws Exception {
+	public Object login(@PathVariable Integer id) throws Exception {
 		Object result = null;
 		try {
 			result = userService.login(id);
 		} catch (Exception e) {
 			result = new ErrorResponse(
-					Arrays.asList(new ErrorDto(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage())));
+					Arrays.asList(new ErrorDto(new Date(), HttpStatus.NOT_FOUND.value(), e.getMessage())));
 		}
 		
 		return result;
@@ -47,7 +47,7 @@ public class UserController {
 			result = userService.signUp(userDto);
 		} catch (Exception e) {
 			result = new ErrorResponse(
-					Arrays.asList(new ErrorDto(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage())));
+					Arrays.asList(new ErrorDto(new Date(), HttpStatus.NOT_FOUND.value(), e.getMessage())));
 		}
 		return result;
 	}

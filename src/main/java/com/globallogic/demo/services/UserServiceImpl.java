@@ -14,8 +14,8 @@ import com.globallogic.demo.exceptions.RecordNotFoundException;
 import com.globallogic.demo.model.Phone;
 import com.globallogic.demo.model.User;
 import com.globallogic.demo.repositories.IUserRepository;
+import com.globallogic.demo.security.JwtTokenUtil;
 import com.globallogic.demo.utils.GLUtils;
-import com.globallogic.demo.utils.JwtUtil;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -40,12 +40,14 @@ public class UserServiceImpl implements IUserService {
 			user.setCreated(new Date());
 			user.setCreated(new Date());
 			user.setActive(true);
-			user.setToken(JwtUtil.createJWT("globallogic", "test-service", "tester"));
+			
 			List<Phone> phones = user.getPhones();
 			phones.stream().map(phone -> {
 				phone.setUser(user);
 				return phone;
 			}).collect(Collectors.toList());
+			userRepository.save(user);
+			user.setToken(JwtTokenUtil.generateAccessToken(user));
 			userRepository.save(user);
 			result = convertToDto(user);
 		} catch (Exception e) {
@@ -55,7 +57,7 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public UserDto login(Long userId) throws Exception {
+	public UserDto login(Integer userId) throws Exception {
 		return convertToDto(userRepository.findById(userId)
 				.orElseThrow(() -> new RecordNotFoundException("User id " + userId + " Not Found")));
 	}

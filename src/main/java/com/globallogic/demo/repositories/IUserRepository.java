@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.globallogic.demo.model.User;
 
 @Repository
-public interface IUserRepository extends CrudRepository<User, Long>{
+public interface IUserRepository extends CrudRepository<User, Integer>{
 }

@@ -6,6 +6,6 @@ import com.globallogic.demo.dto.UserDto;
 
 public interface IUserService {
 	public UserDto signUp(UserDto user) throws Exception;
-	public UserDto login(Long userId) throws Exception;
+	public UserDto login(Integer userId) throws Exception;
 	public List<UserDto> findAll() throws Exception;
 }

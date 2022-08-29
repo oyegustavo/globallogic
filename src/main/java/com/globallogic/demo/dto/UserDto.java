@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class UserDto {
-	private Long id;
+	private Integer id;
 	private Date created;
 	private Date lastLogin;
 	private String token;
