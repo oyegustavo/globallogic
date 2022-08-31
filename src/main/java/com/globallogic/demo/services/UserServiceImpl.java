@@ -67,8 +67,10 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public UserDto login(Integer userId) throws Exception {
-		return convertToDto(userRepository.findById(userId)
-				.orElseThrow(() -> new RecordNotFoundException("User id " + userId + " Not Found")));
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new RecordNotFoundException("User id " + userId + " Not Found"));
+		user.setLastLogin(new Date());
+		return convertToDto(user);
 	}
 
 	@Override
