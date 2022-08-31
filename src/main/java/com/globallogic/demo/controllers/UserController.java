@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.globallogic.demo.dto.ErrorDto;
 import com.globallogic.demo.dto.UserDto;
+import com.globallogic.demo.exceptions.CustomServerException;
 import com.globallogic.demo.exceptions.ErrorResponseDto;
 import com.globallogic.demo.exceptions.InvalidEmailException;
 import com.globallogic.demo.exceptions.InvalidPasswordException;
@@ -64,6 +65,13 @@ public class UserController {
 		RepeatedUserException repeatedUserException = new RepeatedUserException(e.getMessage(), e.getCause());
 		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), repeatedUserException.getHttpStatusCode(),
 				repeatedUserException.getMessage())));
+	}
+
+	@ExceptionHandler({ CustomServerException.class })
+	public ErrorResponseDto handleException(CustomServerException e) {
+		CustomServerException ex = new CustomServerException(e.getMessage(), e.getCause());
+		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), ex.getHttpStatusCode(),
+				ex.getMessage())));
 	}
 
 }

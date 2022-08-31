@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.globallogic.demo.dto.UserDto;
+import com.globallogic.demo.exceptions.CustomServerException;
 import com.globallogic.demo.exceptions.InvalidEmailException;
 import com.globallogic.demo.exceptions.InvalidPasswordException;
 import com.globallogic.demo.exceptions.RecordNotFoundException;
@@ -64,7 +65,7 @@ public class UserServiceImpl implements IUserService {
 			userRepository.save(user);
 			result = convertToDto(user);
 		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage(), e.getCause());
+			throw new CustomServerException(e.getLocalizedMessage(), e.getCause());
 		}
 		return result;
 	}
