@@ -47,7 +47,7 @@ public class UserController {
 			result = userService.signUp(userDto);
 		} catch (Exception e) {
 			result = new ErrorResponse(
-					Arrays.asList(new ErrorDto(new Date(), HttpStatus.NOT_FOUND.value(), e.getMessage())));
+					Arrays.asList(new ErrorDto(new Date(), HttpStatus.BAD_REQUEST.value(), e.getMessage())));
 		}
 		return result;
 	}
