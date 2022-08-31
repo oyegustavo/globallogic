@@ -1,7 +1,6 @@
 package com.globallogic.demo.controllers;
 
 import java.util.Arrays;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.globallogic.demo.dto.ErrorDto;
 import com.globallogic.demo.dto.UserDto;
 import com.globallogic.demo.exceptions.ErrorResponse;
+import com.globallogic.demo.exceptions.RecordNotFoundException;
 import com.globallogic.demo.services.IUserService;
 
 @RestController
@@ -30,8 +30,12 @@ public class UserController {
 		try {
 			result = userService.login(id);
 		} catch (Exception e) {
-			result = new ErrorResponse(
-					Arrays.asList(new ErrorDto(new Date(), HttpStatus.NOT_FOUND.value(), e.getMessage())));
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+			result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
+			if (RecordNotFoundException.class.getName().equals(e.getClass().getName())) {
+				errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+				result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
+			}
 		}
 		
 		return result;
@@ -44,8 +48,13 @@ public class UserController {
 		try {
 			result = userService.signUp(userDto);
 		} catch (Exception e) {
-			result = new ErrorResponse(
-					Arrays.asList(new ErrorDto(new Date(), HttpStatus.BAD_REQUEST.value(), e.getMessage())));
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+			result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
+			if (RuntimeException.class.getName().equals(e.getClass().getName())) {
+				errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+				result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
+			}
+
 		}
 		return result;
 	}
@@ -56,8 +65,12 @@ public class UserController {
 		try {
 			result = userService.findAll();
 		} catch (Exception e) {
-			result = new ErrorResponse(
-					Arrays.asList(new ErrorDto(new Date(), HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage())));
+			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+			result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
+			if (RuntimeException.class.getName().equals(e.getClass().getName())) {
+				errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
+				result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
+			}
 		}
 		return result;
 	}
