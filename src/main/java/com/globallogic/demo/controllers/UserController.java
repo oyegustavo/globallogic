@@ -39,7 +39,6 @@ public class UserController {
 	}
 
 	@PostMapping({ "sign-up" })
-	@ResponseStatus(HttpStatus.CREATED)
 	public Object signUp(@RequestBody UserDto userDto) {
 
 		Object result = null;
