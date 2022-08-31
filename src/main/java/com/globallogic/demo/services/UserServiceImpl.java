@@ -11,7 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.globallogic.demo.dto.UserDto;
+import com.globallogic.demo.exceptions.InvalidEmailException;
+import com.globallogic.demo.exceptions.InvalidPasswordException;
 import com.globallogic.demo.exceptions.RecordNotFoundException;
+import com.globallogic.demo.exceptions.RepeatedUserException;
 import com.globallogic.demo.model.Phone;
 import com.globallogic.demo.model.User;
 import com.globallogic.demo.repositories.IUserRepository;
@@ -35,14 +38,14 @@ public class UserServiceImpl implements IUserService {
 	{
 		UserDto result = null;
 		if (userRepository.findByEmail(userDto.getEmail())!=null) {
-			throw new RuntimeException("The user " + userDto.getEmail() + " already exists!");
+			throw new RepeatedUserException("The user " + userDto.getEmail() + " already exists!");
 		}
 		
 		if (!EmailValidator.getInstance().isValid(userDto.getEmail())) {
-			throw new RuntimeException("Invalid email address!");
+			throw new InvalidEmailException("Invalid email address!");
 		}
 		if (!GLUtils.isValidPassword(userDto.getPassword())) {
-			throw new RuntimeException("Invalid password!");
+			throw new InvalidPasswordException("Invalid password!");
 		}
 		userDto.setPassword(passwordEncode.encode(userDto.getPassword()));
 		try {
@@ -61,7 +64,7 @@ public class UserServiceImpl implements IUserService {
 			userRepository.save(user);
 			result = convertToDto(user);
 		} catch (Exception e) {
-			throw new Exception(e.getLocalizedMessage());
+			throw new Exception(e.getLocalizedMessage(), e.getCause());
 		}
 		return result;
 	}
@@ -78,7 +81,7 @@ public class UserServiceImpl implements IUserService {
 	public List<UserDto> findAll() throws Exception {
 		List<User> users = (List<User>) userRepository.findAll();
 		if (users == null) {
-			throw new Exception("Users not found");
+			throw new RecordNotFoundException("Users not found");
 		}
 		List<UserDto> dtos = users.stream().map(user -> modelMapper.map(user, UserDto.class))
 				.collect(Collectors.toList());

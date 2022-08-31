@@ -1,9 +1,10 @@
 package com.globallogic.demo.controllers;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.globallogic.demo.dto.ErrorDto;
 import com.globallogic.demo.dto.UserDto;
-import com.globallogic.demo.exceptions.ErrorResponse;
+import com.globallogic.demo.exceptions.ErrorResponseDto;
+import com.globallogic.demo.exceptions.InvalidEmailException;
+import com.globallogic.demo.exceptions.InvalidPasswordException;
 import com.globallogic.demo.exceptions.RecordNotFoundException;
+import com.globallogic.demo.exceptions.RepeatedUserException;
 import com.globallogic.demo.services.IUserService;
 
 @RestController
@@ -25,54 +29,41 @@ public class UserController {
 	private IUserService userService;
 
 	@GetMapping({ "login/{id}" })
-	public Object login(@PathVariable Integer id) throws Exception {
-		Object result = null;
-		try {
-			result = userService.login(id);
-		} catch (Exception e) {
-			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
-			result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
-			if (RecordNotFoundException.class.getName().equals(e.getClass().getName())) {
-				errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
-				result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
-			}
-		}
-		
-		return result;
+	public UserDto login(@PathVariable Integer id) throws Exception {
+		return userService.login(id);
 	}
 
 	@PostMapping({ "sign-up" })
-	public Object signUp(@RequestBody UserDto userDto) {
-
-		Object result = null;
-		try {
-			result = userService.signUp(userDto);
-		} catch (Exception e) {
-			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
-			result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
-			if (RuntimeException.class.getName().equals(e.getClass().getName())) {
-				errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
-				result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
-			}
-
-		}
-		return result;
+	public UserDto signUp(@RequestBody UserDto userDto) throws Exception {
+		return userService.signUp(userDto);
 	}
 
-	@GetMapping
-	public Object findAllUsers() {
-		Object result = null;
-		try {
-			result = userService.findAll();
-		} catch (Exception e) {
-			ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
-			result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
-			if (RuntimeException.class.getName().equals(e.getClass().getName())) {
-				errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST, e.getLocalizedMessage());
-				result = Arrays.asList(new ErrorDto(errorResponse.getTimestamp(), errorResponse.getCode(), errorResponse.getMessage()));
-			}
-		}
-		return result;
+	@ExceptionHandler({ InvalidEmailException.class })
+	public ErrorResponseDto handleInvalidEmailException(RuntimeException e) {
+		InvalidEmailException invalidEmailException = new InvalidEmailException(e.getMessage(), e.getCause());
+		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), invalidEmailException.getHttpStatusCode(),
+				invalidEmailException.getMessage())));
+	}
+
+	@ExceptionHandler({ InvalidPasswordException.class })
+	public ErrorResponseDto handleInvalidPasswordException(RuntimeException e) {
+		InvalidPasswordException invalidPasswordException = new InvalidPasswordException(e.getMessage(), e.getCause());
+		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), invalidPasswordException.getHttpStatusCode(),
+				invalidPasswordException.getMessage())));
+	}
+
+	@ExceptionHandler({ RecordNotFoundException.class })
+	public ErrorResponseDto handleRecordNotFoundException(RuntimeException e) {
+		RecordNotFoundException recordNotFoundException = new RecordNotFoundException(e.getMessage(), e.getCause());
+		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), recordNotFoundException.getHttpStatusCode(),
+				recordNotFoundException.getMessage())));
+	}
+
+	@ExceptionHandler({ RepeatedUserException.class })
+	public ErrorResponseDto handleRepeatedUserException(RuntimeException e) {
+		RepeatedUserException repeatedUserException = new RepeatedUserException(e.getMessage(), e.getCause());
+		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), repeatedUserException.getHttpStatusCode(),
+				repeatedUserException.getMessage())));
 	}
 
 }

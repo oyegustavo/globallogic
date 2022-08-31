@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class UserDto {
+public class UserDto{
 	private Integer id;
 	private Date created;
 	private Date lastLogin;
