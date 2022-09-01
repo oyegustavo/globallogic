@@ -39,7 +39,7 @@ public class UserServiceImpl implements IUserService {
 	{
 		UserDto result = null;
 		if (userRepository.findByEmail(userDto.getEmail())!=null) {
-			throw new RepeatedUserException("The user " + userDto.getEmail() + " already exists!");
+			throw new RepeatedUserException("The user already exists!");
 		}
 		
 		if (!EmailValidator.getInstance().isValid(userDto.getEmail())) {
@@ -73,20 +73,9 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserDto login(Integer userId) throws Exception {
 		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new RecordNotFoundException("User id " + userId + " Not Found"));
+				.orElseThrow(() -> new RecordNotFoundException("User Not Found!"));
 		user.setLastLogin(new Date());
 		return convertToDto(user);
-	}
-
-	@Override
-	public List<UserDto> findAll() throws Exception {
-		List<User> users = (List<User>) userRepository.findAll();
-		if (users == null) {
-			throw new RecordNotFoundException("Users not found");
-		}
-		List<UserDto> dtos = users.stream().map(user -> modelMapper.map(user, UserDto.class))
-				.collect(Collectors.toList());
-		return dtos;
 	}
 
 	public UserDto convertToDto(User user) {

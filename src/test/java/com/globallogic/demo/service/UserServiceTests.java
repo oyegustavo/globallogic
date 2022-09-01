@@ -2,10 +2,13 @@ package com.globallogic.demo.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +22,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.globallogic.demo.dto.PhoneDto;
 import com.globallogic.demo.dto.UserDto;
+import com.globallogic.demo.exceptions.InvalidEmailException;
+import com.globallogic.demo.exceptions.InvalidPasswordException;
+import com.globallogic.demo.exceptions.RecordNotFoundException;
+import com.globallogic.demo.exceptions.RepeatedUserException;
 import com.globallogic.demo.model.Phone;
 import com.globallogic.demo.model.User;
 import com.globallogic.demo.repositories.IUserRepository;
@@ -41,6 +48,8 @@ public class UserServiceTests {
 	private Phone phone;
 	private UserDto userDto;
 	private PhoneDto phoneDto;
+	private UserDto invalidMailuserDto;
+	private UserDto invalidPasswordUserDto;
 
 	@BeforeEach
 	public void setup() {
@@ -72,6 +81,13 @@ public class UserServiceTests {
 
 		phone = new Phone(1, (long) 83763626, 381, 54, user);
 
+		invalidMailuserDto = new UserDto();
+		invalidMailuserDto.setEmail("bla@blacom");
+
+		invalidPasswordUserDto = new UserDto();
+		invalidPasswordUserDto.setEmail("bla@bla.com");
+		invalidPasswordUserDto.setPassword("aa2sGffu2aaaaaaaaaaaaaa");
+
 	}
 
 	@DisplayName("JUnit test for signup method")
@@ -84,9 +100,6 @@ public class UserServiceTests {
 		given(passwordEncode.encode(userDto.getPassword()))
 				.willReturn("$2a$10$RsLRQaoOviQF8aIQFKthxObu0SPLEnnV7apxkcSK/LqlwJ7w59iwK");
 
-		System.out.println(userRepository);
-		System.out.println(userService);
-
 		UserDto savedUser;
 		try {
 			savedUser = userService.signUp(userDto);
@@ -98,4 +111,52 @@ public class UserServiceTests {
 
 	}
 
+	@Test
+	void invalidEmailExceptionTest() {
+		InvalidEmailException thrown = assertThrows(InvalidEmailException.class,
+				() -> userService.signUp(invalidMailuserDto));
+
+		assertTrue(thrown.getMessage().contains("Invalid email address!"));
+	}
+
+	@Test
+	void invalidPasswordExceptionTest() {
+		InvalidPasswordException thrown = assertThrows(InvalidPasswordException.class,
+				() -> userService.signUp(invalidPasswordUserDto));
+
+		assertTrue(thrown.getMessage().contains("Invalid password!"));
+	}
+
+	void repeatedUserExceptionTest() {
+
+		given(userRepository.findByEmail(userDto.getEmail())).willReturn(user);
+
+		RepeatedUserException thrown = assertThrows(RepeatedUserException.class, () -> userService.signUp(userDto));
+
+		assertTrue(thrown.getMessage().contains("The user already exists!"));
+	}
+
+
+	@Test
+	public void givenUserId_whenLogin_thenReturnUser() {
+		given(userRepository.findById(1)).willReturn(Optional.of(user));
+		given(userService.convertToDto(user)).willReturn(userDto);
+
+		UserDto foundUser;
+		try {
+			foundUser = userService.login(1);
+			System.out.println(foundUser);
+			assertThat(foundUser).isNotNull();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	void recordNotFoundExceptionTest() {
+		given(userRepository.findById(1)).willReturn(Optional.ofNullable(null));
+		RecordNotFoundException thrown = assertThrows(RecordNotFoundException.class, () -> userService.login(1));
+
+		assertTrue(thrown.getMessage().contains("User Not Found!"));
+	}
 }
