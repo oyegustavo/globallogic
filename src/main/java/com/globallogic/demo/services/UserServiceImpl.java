@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,31 +38,24 @@ public class UserServiceImpl implements IUserService {
 		this.passwordEncode = passwordEncode;
 	}
 
-	@Value("${error.message.RepeatedUserException}")
-	private String repeatedUserExceptionMessage;
-	
-	@Value("${error.message.InvalidEmailException}")
-	private String invalidEmailExceptionMessage;
-	
-	@Value("${error.message.InvalidPasswordException}")
-	private String invalidPasswordExceptionMessage;
-	
-	@Value("${error.message.RecordNotFoundException}")
-	private String recordNotFoundExceptionMessage;
+	private static final String REPEATED_USER_EXCEPTION_MSG = "The user already exists!";
+	private static final String INVALID_EMAIL_EXCEPTION_MSG="Invalid email address!";
+	private static final String INVALID_PASSWORD_EXCEPTION_MSG="Invalid password!";
+	private static final String RECORD_NOT_FOUND_EXCEPTION_MSG="User Not Found!";
 
 	@Override
 	public UserDto signUp(UserDto userDto) throws Exception
 	{
 		UserDto result = null;
 		if (userRepository.findByEmail(userDto.getEmail())!=null) {
-			throw new RepeatedUserException(repeatedUserExceptionMessage);
+			throw new RepeatedUserException(REPEATED_USER_EXCEPTION_MSG);
 		}
 		
 		if (!EmailValidator.getInstance().isValid(userDto.getEmail())) {
-			throw new InvalidEmailException(invalidEmailExceptionMessage);
+			throw new InvalidEmailException(INVALID_EMAIL_EXCEPTION_MSG);
 		}
 		if (!Utils.isValidPassword(userDto.getPassword())) {
-			throw new InvalidPasswordException(invalidPasswordExceptionMessage);
+			throw new InvalidPasswordException(INVALID_PASSWORD_EXCEPTION_MSG);
 		}
 		userDto.setPassword(passwordEncode.encode(userDto.getPassword()));
 		try {
@@ -90,7 +82,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserDto login(Integer userId) throws Exception {
 		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new RecordNotFoundException(recordNotFoundExceptionMessage));
+				.orElseThrow(() -> new RecordNotFoundException(RECORD_NOT_FOUND_EXCEPTION_MSG));
 		user.setLastLogin(new Date());
 		return convertToDto(user);
 	}
