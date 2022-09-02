@@ -39,11 +39,6 @@ public class UserControllerTests {
 	private PhoneDto phoneDto;
 	private User user;
 	private Phone phone;
-//	private ErrorResponseDto errorResponseDto;
-//	private ErrorDto errorDto1;
-//	private ErrorDto errorDto2;
-//	private ErrorDto errorDto3;
-//	private ErrorDto errorDto4;
 
 	@BeforeEach
 	public void setup() {
