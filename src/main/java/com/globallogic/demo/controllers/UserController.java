@@ -66,7 +66,7 @@ public class UserController {
 	}
 
 	@ExceptionHandler({ CustomServerException.class })
-	public ErrorResponseDto handleException(CustomServerException e) {
+	public ErrorResponseDto handleException(Exception e) {
 		CustomServerException ex = new CustomServerException(e.getMessage(), e.getCause());
 		return new ErrorResponseDto(Arrays.asList(new ErrorDto(new Date(), ex.getHttpStatusCode(),
 				ex.getMessage())));
