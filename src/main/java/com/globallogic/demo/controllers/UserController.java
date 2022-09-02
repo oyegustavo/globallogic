@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.globallogic.demo.dto.ErrorDto;
+import com.globallogic.demo.dto.ErrorResponseDto;
 import com.globallogic.demo.dto.UserDto;
 import com.globallogic.demo.exceptions.CustomServerException;
-import com.globallogic.demo.exceptions.ErrorResponseDto;
 import com.globallogic.demo.exceptions.InvalidEmailException;
 import com.globallogic.demo.exceptions.InvalidPasswordException;
 import com.globallogic.demo.exceptions.RecordNotFoundException;
@@ -23,7 +22,6 @@ import com.globallogic.demo.exceptions.RepeatedUserException;
 import com.globallogic.demo.services.IUserService;
 
 @RestController
-@RequestMapping("/api/user/")
 public class UserController {
 
 	@Autowired

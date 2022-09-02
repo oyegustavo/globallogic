@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,33 +21,49 @@ import com.globallogic.demo.model.Phone;
 import com.globallogic.demo.model.User;
 import com.globallogic.demo.repositories.IUserRepository;
 import com.globallogic.demo.security.JwtTokenUtil;
-import com.globallogic.demo.utils.GLUtils;
+import com.globallogic.demo.utils.Utils;
 
 @Service
 public class UserServiceImpl implements IUserService {
-
-	@Autowired
+	
 	private IUserRepository userRepository;
-
-	@Autowired
 	private ModelMapper modelMapper;
+	private BCryptPasswordEncoder passwordEncode;
 	
 	@Autowired
-	private BCryptPasswordEncoder passwordEncode;
+	public UserServiceImpl(IUserRepository userRepository, ModelMapper modelMapper,
+			BCryptPasswordEncoder passwordEncode) {
+		super();
+		this.userRepository = userRepository;
+		this.modelMapper = modelMapper;
+		this.passwordEncode = passwordEncode;
+	}
+
+	@Value("${error.message.RepeatedUserException}")
+	private String repeatedUserExceptionMessage;
+	
+	@Value("${error.message.InvalidEmailException}")
+	private String invalidEmailExceptionMessage;
+	
+	@Value("${error.message.InvalidPasswordException}")
+	private String invalidPasswordExceptionMessage;
+	
+	@Value("${error.message.RecordNotFoundException}")
+	private String recordNotFoundExceptionMessage;
 
 	@Override
 	public UserDto signUp(UserDto userDto) throws Exception
 	{
 		UserDto result = null;
 		if (userRepository.findByEmail(userDto.getEmail())!=null) {
-			throw new RepeatedUserException("The user already exists!");
+			throw new RepeatedUserException(repeatedUserExceptionMessage);
 		}
 		
 		if (!EmailValidator.getInstance().isValid(userDto.getEmail())) {
-			throw new InvalidEmailException("Invalid email address!");
+			throw new InvalidEmailException(invalidEmailExceptionMessage);
 		}
-		if (!GLUtils.isValidPassword(userDto.getPassword())) {
-			throw new InvalidPasswordException("Invalid password!");
+		if (!Utils.isValidPassword(userDto.getPassword())) {
+			throw new InvalidPasswordException(invalidPasswordExceptionMessage);
 		}
 		userDto.setPassword(passwordEncode.encode(userDto.getPassword()));
 		try {
@@ -73,7 +90,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserDto login(Integer userId) throws Exception {
 		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new RecordNotFoundException("User Not Found!"));
+				.orElseThrow(() -> new RecordNotFoundException(recordNotFoundExceptionMessage));
 		user.setLastLogin(new Date());
 		return convertToDto(user);
 	}

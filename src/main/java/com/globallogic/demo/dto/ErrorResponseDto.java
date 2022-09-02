@@ -1,8 +1,6 @@
-package com.globallogic.demo.exceptions;
+package com.globallogic.demo.dto;
 
 import java.util.List;
-
-import com.globallogic.demo.dto.ErrorDto;
 
 import lombok.Data;
 

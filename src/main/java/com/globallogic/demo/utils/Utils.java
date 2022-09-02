@@ -1,8 +1,8 @@
 package com.globallogic.demo.utils;
 
-public class GLUtils {
+public class Utils {
 
-	private GLUtils() {
+	private Utils() {
 	}
 	
 	public static boolean isValidPassword(final String PASSWORD_Arg)    {
