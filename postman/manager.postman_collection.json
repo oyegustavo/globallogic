@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "452f538b-e593-49a6-82d2-7b97394ba82d",
+		"name": "manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4786732"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/sign-up",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzcyOTI1NzEsInVzZXJfbmFtZSI6ImluaWV4cCIsImF1dGhvcml0aWVzIjpbIlNBRV9XUklURSIsIlBBUkFNU19XUklURSIsIkJFX1JFQUQiLCJTQUVfUkVBRCIsIkJFX1dSSVRFIiwiUEVSU09OU19XUklURSIsIlBBUkFNU19ERUxFVEUiLCJQRVJTT05TX1JFQUQiLCJBQk9HQURPU19SRUFEIiwiUEFSQU1TX1JFQUQiLCJCRV9ERUxFVEUiLCJBQk9HQURPU19XUklURSIsIlNBRV9ERUxFVEUiLCJST0xFX0FETUlOIiwiQUJPR0FET1NfREVMRVRFIl0sImp0aSI6IjVmZDZkMGZjLWEyYzEtNDM4Ny04ZGMyLTFlMmI0Yzk1M2MzNCIsImNsaWVudF9pZCI6ImZyb250ZW5kYXBwIiwic2NvcGUiOlsicmVhZCIsIndyaXRlIl19.xHtI-v5R9oNaohlsuLKQu6O8vR6qNPpp_YUvuTt7V-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Tenant",
+						"value": "apremios-cjc",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\":\"el nombre\",\r\n   \"email\":\"blas@blacos.com\",\r\n   \"password\":\"aa2sGffu2a\",\r\n   \"phones\":[\r\n      {\r\n         \"number\":218110,\r\n         \"cityCode\":381,\r\n         \"countryCode\":53\r\n      },\r\n      {\r\n         \"number\":218111,\r\n         \"cityCode\":384,\r\n         \"countryCode\":55\r\n      }\r\n   ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/sign-up",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/login/1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxLGJsYXNAYmxhY29zLmNvbSIsImlzcyI6Imdsb2JhbGxvZ2ljIiwiaWF0IjoxNjYyMTI4OTk2LCJleHAiOjE2NjIyMTUzOTZ9.0H1P5xWl5ed2SoGOFAZt5aNreebXXWd4s287dIoSf4XAHmxpThTk9_pZRWxMY16JzO4A8vTHWIrQOj6sTF1NVQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"uuid\": \"4e44d0c3-6cc3-4f8d-add6-283728d665bb\",\r\n    \"centerId\": null,\r\n    \"jurisdictionId\": 5,\r\n    \"jurisdiction\": \"Documentos y locaciones\",\r\n    \"typeId\": 403,\r\n    \"type\": \"Otro Type\",\r\n    \"username\": \"migra\",\r\n    \"name\": \"migra\",\r\n    \"lastname\": \"migracion\",\r\n    \"domesticViolence\": 19,\r\n    \"prosecutionIntervention\": 45,\r\n    \"prosecutionId\": 47,\r\n    \"prosecution\": \"prosecution\",\r\n    \"prosecutionNumber\": \"\",\r\n    \"connexity\": null,\r\n    \"lawyers\": [\r\n            {\r\n                \"identifier\": \"20185962912\",\r\n                \"name\": \"Romina\",\r\n                \"lastName\": \"Vaisblat\",\r\n                \"characterId\": 5,\r\n                \"character\": \"caracter\",\r\n                \"phoneMobile\": null,\r\n                \"email\": null,\r\n                \"order\": 5\r\n            },\r\n            {\r\n                \"identifier\": \"20127342890\",\r\n                \"name\": \"Juana\",\r\n                \"lastName\": \"Rodríguez\",\r\n                \"characterId\": 47,\r\n                \"character\": \"dadad\",\r\n                \"phoneMobile\": null,\r\n                \"email\": null,\r\n                \"order\": 18\r\n            }\r\n    ],\r\n    \"parts\": [\r\n {\r\n      \"type\": \"A\",\r\n      \"identifier\": \"111000029\",\r\n      \"personTypeId\": 1,\r\n      \"personType\": \"string\",\r\n      \"name\": \"Roberto\",\r\n      \"lastName\": \"Gomez\",\r\n      \"bornDate\": \"20999227\",\r\n      \"bornPlace\": \"string\",\r\n      \"bornGender\": \"f\",\r\n      \"addressStreet\": \"string\",\r\n      \"addressNumber\": \"string\",\r\n      \"addressExtra\": \"string\",\r\n      \"addressCityId\": 1,\r\n      \"addressCity\": \"string\",\r\n      \"addressProvinceId\": 1,\r\n      \"addressProvince\": \"string\",\r\n      \"addressCountry\": \"string\",\r\n      \"hasResidence\": 0,\r\n      \"civilStatusId\": 1,\r\n      \"civilStatus\": \"string\",\r\n      \"hasFreedom\": 0,\r\n      \"email\": \"string\",\r\n      \"phone\": \"string\" \r\n    }\r\n    ],\r\n    \"violences\": [\r\n            {\r\n                \"type\": 5,\r\n                \"description\": \"VIOLENCE5\"\r\n            },\r\n            {\r\n                \"type\": 2,\r\n                \"description\": \"VIOLENCE2\"\r\n            }\r\n    ],\r\n    \"files\": [\r\n        {\r\n            \"filePath\": \"/lugar/donde/esta\",\r\n            \"fileName\": \"nombredocumento\",\r\n            \"documentFormat\": \"pdf\",\r\n            \"documentType\": \"pdf\" \r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
